@@ -57,8 +57,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskResponse> listByProject(UUID projectId) {
-        return taskRepository.findByProjectId(projectId).stream().map(TaskResponse::from).toList();
+    public List<TaskResponse> listByProject(UUID projectId, Status status) {
+        if (status == null) {
+            return taskRepository.findByProjectId(projectId).stream().map(TaskResponse::from).toList();
+        }
+        return taskRepository.findByProjectIdAndStatus(projectId, status).stream().map(TaskResponse::from).toList();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.hyperlink.tmp.task.service;
 
-import com.hyperlink.tmp.task.dto.AssignRequest;
 import com.hyperlink.tmp.task.dto.TaskRequest;
 import com.hyperlink.tmp.task.dto.TaskResponse;
 import com.hyperlink.tmp.task.util.Status;
@@ -10,7 +9,7 @@ import java.util.UUID;
 
 public interface TaskService {
     TaskResponse create(UUID projectId, TaskRequest request, UUID ownerUserId);
-    List<TaskResponse> listByProject(UUID projectId);
+    List<TaskResponse> listByProject(UUID projectId, Status status);
     TaskResponse getById(UUID projectId, UUID taskId);
     TaskResponse update(UUID projectId, UUID taskId, TaskRequest request);
     void delete(UUID projectId, UUID taskId);

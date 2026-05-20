@@ -5,6 +5,7 @@ import com.hyperlink.tmp.task.dto.TaskRequest;
 import com.hyperlink.tmp.task.dto.TaskResponse;
 import com.hyperlink.tmp.task.dto.UpdateStatusRequest;
 import com.hyperlink.tmp.task.service.TaskService;
+import com.hyperlink.tmp.task.util.Status;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +36,9 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TaskResponse>> list(@PathVariable("projectId") UUID projectId) {
-        return ResponseEntity.ok(taskService.listByProject(projectId));
+    public ResponseEntity<List<TaskResponse>> list(@PathVariable("projectId") UUID projectId,
+                                                   @RequestParam(value = "status", required = false) Status status) {
+        return ResponseEntity.ok(taskService.listByProject(projectId, status));
     }
 
     @GetMapping("/{taskId}")
