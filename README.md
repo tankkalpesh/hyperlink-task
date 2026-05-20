@@ -1,6 +1,7 @@
 # hyperlink-task
+Core points are covered and from the Bonus feature - Swagger UI is implemented.
 
-A Java 21 and Spring Boot 3.4.5 used.
+A Java 21 and Spring Boot 3.4.7 used.
 
 
 Must update the database details in both of these files if your local PostgreSQL setup differs:
@@ -39,3 +40,8 @@ mvn -pl task-service spring-boot:run
 
 ## Postman
 Added Postman collection in repo itself.
+
+
+## Swagger UI
+- auth-service: http://localhost:8081/swagger-ui/index.html
+- task-service: http://localhost:8082/swagger-ui/index.html

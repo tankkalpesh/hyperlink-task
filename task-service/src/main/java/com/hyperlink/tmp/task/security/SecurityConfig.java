@@ -32,6 +32,7 @@ public class SecurityConfig {
                     .accessDeniedHandler((request, response, accessDeniedException) -> writeJsonError(request, response, HttpServletResponse.SC_FORBIDDEN, "Forbidden"))
                 )
                 .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         .anyRequest().authenticated()
                 )
