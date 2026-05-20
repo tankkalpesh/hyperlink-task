@@ -18,7 +18,7 @@ public class UserResponse {
         userResponse.id = user.getId();
         userResponse.email = user.getEmail();
         userResponse.fullName = user.getFullName();
-        userResponse.role = user.getRole();
+        userResponse.role = user.getRole() != null ? user.getRole().name() : null;
         userResponse.createdAt = user.getCreatedAt();
         userResponse.isActive = user.isActive();
         return userResponse;

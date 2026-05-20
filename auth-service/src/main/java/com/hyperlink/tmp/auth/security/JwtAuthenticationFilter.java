@@ -3,6 +3,7 @@ package com.hyperlink.tmp.auth.security;
 import com.hyperlink.tmp.auth.util.JwtUtil;
 import com.hyperlink.tmp.auth.repository.UserRepository;
 import com.hyperlink.tmp.auth.model.User;
+import com.hyperlink.tmp.auth.util.Role;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,10 +38,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 String subject = jwtUtil.validateAndGetSubject(token);
                 String role = jwtUtil.getRoleFromToken(token);
+                Role parsedRole = Role.valueOf(role);
                 java.util.UUID userId = java.util.UUID.fromString(subject);
                 java.util.Optional<User> userOpt = userRepository.findById(userId);
                 if (userOpt.isPresent() && userOpt.get().isActive()) {
-                    SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role);
+                    SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + parsedRole.name());
                     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(subject, null, Collections.singletonList(authority));
                     auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(auth);

@@ -1,8 +1,10 @@
 package com.hyperlink.tmp.task.util;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,6 +22,34 @@ public class GlobalExceptionHandler {
         body.put("timestamp", LocalDateTime.now());
         body.put("status", 400);
         body.put("message", "Validation failed");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Object> handleNotReadable(HttpMessageNotReadableException ex) {
+        Throwable cause = ex.getCause();
+        if (cause instanceof InvalidFormatException invalidFormatException) {
+            Class<?> targetType = invalidFormatException.getTargetType();
+            if (targetType != null && Status.class.isAssignableFrom(targetType)) {
+                Map<String, Object> body = new HashMap<>();
+                body.put("timestamp", LocalDateTime.now());
+                body.put("status", 400);
+                body.put("message", "Invalid status value. Valid statuses are: TODO, IN_PROGRESS, DONE.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+            }
+            if (targetType != null && Priority.class.isAssignableFrom(targetType)) {
+                Map<String, Object> body = new HashMap<>();
+                body.put("timestamp", LocalDateTime.now());
+                body.put("status", 400);
+                body.put("message", "Invalid priority value. Valid priorities are: LOW, MEDIUM, HIGH.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+            }
+        }
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", 400);
+        body.put("message", "Invalid request body");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 

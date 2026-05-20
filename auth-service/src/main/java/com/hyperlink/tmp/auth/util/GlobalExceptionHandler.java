@@ -2,6 +2,8 @@ package com.hyperlink.tmp.auth.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,8 +33,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
-    @ExceptionHandler(org.springframework.security.core.AuthenticationException.class)
-    public ResponseEntity<Object> handleAuth(org.springframework.security.core.AuthenticationException ex) {
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Object> handleAuth(AuthenticationException ex) {
         Map<String,Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("status", 401);
@@ -40,8 +42,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 
-    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
-    public ResponseEntity<Object> handleAccessDenied(org.springframework.security.access.AccessDeniedException ex) {
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAccessDenied(AccessDeniedException ex) {
         Map<String,Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("status", 403);

@@ -7,6 +7,7 @@ import com.hyperlink.tmp.auth.dto.UserResponse;
 import com.hyperlink.tmp.auth.util.JwtUtil;
 import com.hyperlink.tmp.auth.model.User;
 import com.hyperlink.tmp.auth.repository.UserRepository;
+import com.hyperlink.tmp.auth.util.Role;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(registerRequest.getEmail());
         user.setPasswordHash(passwordEncoder.encode(registerRequest.getPassword()));
         user.setFullName(registerRequest.getFullName());
-        user.setRole("USER");
+        user.setRole(Role.USER);
         user.setActive(true);
 
         User saved = userRepository.save(user);
@@ -52,7 +53,7 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPasswordHash())) {
             throw new IllegalArgumentException("Invalid credentials");
         }
-        String token = jwtUtil.generateToken(user.getId().toString(), user.getRole());
+        String token = jwtUtil.generateToken(user.getId().toString(), user.getRole().name());
         return new LoginResponse(token);
     }
 

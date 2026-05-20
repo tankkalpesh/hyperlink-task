@@ -2,9 +2,13 @@ package com.hyperlink.tmp.task.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import com.hyperlink.tmp.task.util.Priority;
+import com.hyperlink.tmp.task.util.Status;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -29,10 +33,12 @@ public class Task {
     private UUID assigneeUserId;
 
     @Column(name = "priority")
-    private String priority;
+    @Enumerated(EnumType.STRING)
+    private Priority priority;
 
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -45,7 +51,7 @@ public class Task {
         if (id == null) id = UUID.randomUUID();
         if (createdAt == null) createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
-        if (priority == null) priority = "MEDIUM";
+        if (priority == null) priority = Priority.MEDIUM;
     }
 
     public UUID getId() { return id; }
@@ -63,11 +69,11 @@ public class Task {
     public UUID getAssigneeUserId() { return assigneeUserId; }
     public void setAssigneeUserId(UUID assigneeUserId) { this.assigneeUserId = assigneeUserId; }
 
-    public String getPriority() { return priority; }
-    public void setPriority(String priority) { this.priority = priority; }
+    public Priority getPriority() { return priority; }
+    public void setPriority(Priority priority) { this.priority = priority; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public Status getStatus() { return status; }
+    public void setStatus(Status status) { this.status = status; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

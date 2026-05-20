@@ -2,6 +2,7 @@ package com.hyperlink.tmp.auth.bootstrap;
 
 import com.hyperlink.tmp.auth.model.User;
 import com.hyperlink.tmp.auth.repository.UserRepository;
+import com.hyperlink.tmp.auth.util.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +45,7 @@ public class AdminBootstrap implements CommandLineRunner {
         Optional<User> existing = userRepository.findByEmail(adminEmail);
         if (existing.isPresent()) {
             User user = existing.get();
-            user.setRole("ADMIN");
+            user.setRole(Role.ADMIN);
             user.setActive(true);
             userRepository.save(user);
             log.info("Admin user already existed and was ensured active: {}", adminEmail);
@@ -55,7 +56,7 @@ public class AdminBootstrap implements CommandLineRunner {
         admin.setEmail(adminEmail);
         admin.setPasswordHash(passwordEncoder.encode(adminPassword));
         admin.setFullName(adminFullName);
-        admin.setRole("ADMIN");
+        admin.setRole(Role.ADMIN);
         admin.setActive(true);
         userRepository.save(admin);
         log.info("Bootstrapped admin user: {}", adminEmail);

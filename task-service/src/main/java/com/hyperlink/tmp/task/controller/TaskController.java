@@ -8,6 +8,7 @@ import com.hyperlink.tmp.task.service.TaskService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/projects/{projectId}/tasks")
-@org.springframework.security.access.prepost.PreAuthorize("isAuthenticated()")
+@PreAuthorize("isAuthenticated()")
 public class TaskController {
 
     private final TaskService taskService;
@@ -52,7 +53,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{taskId}")
-    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable("projectId") UUID projectId,
                                        @PathVariable("taskId") UUID taskId) {
         taskService.delete(projectId, taskId);
@@ -60,7 +61,7 @@ public class TaskController {
     }
 
     @PatchMapping("/{taskId}/assign")
-    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TaskResponse> assign(@PathVariable("projectId") UUID projectId,
                                                @PathVariable("taskId") UUID taskId,
                                                @Valid @RequestBody AssignRequest request,

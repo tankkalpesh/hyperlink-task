@@ -1,11 +1,17 @@
 package com.hyperlink.tmp.task.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import com.hyperlink.tmp.task.util.Status;
+import jakarta.validation.constraints.NotNull;
 
 public class UpdateStatusRequest {
-    @NotBlank(message = "status is required")
-    private String status;
+    @NotNull(message = "status is required")
+    private Status status;
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 }

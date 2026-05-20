@@ -1,7 +1,10 @@
 package com.hyperlink.tmp.auth.model;
 
+import com.hyperlink.tmp.auth.util.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -25,7 +28,8 @@ public class User {
     private String fullName;
 
     @Column(name = "role")
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -71,11 +75,11 @@ public class User {
         this.fullName = fullName;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

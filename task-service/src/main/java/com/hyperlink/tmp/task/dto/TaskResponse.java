@@ -23,8 +23,8 @@ public class TaskResponse {
         taskResponse.description = task.getDescription();
         taskResponse.projectId = task.getProjectId();
         taskResponse.assigneeUserId = task.getAssigneeUserId();
-        taskResponse.priority = task.getPriority();
-        taskResponse.status = task.getStatus();
+        taskResponse.priority = task.getPriority() != null ? task.getPriority().name() : null;
+        taskResponse.status = task.getStatus() != null ? task.getStatus().name() : null;
         taskResponse.createdAt = task.getCreatedAt();
         taskResponse.updatedAt = task.getUpdatedAt();
         return taskResponse;
