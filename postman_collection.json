@@ -170,6 +170,22 @@
                   }
                 },
                 {
+                  "name": "List Tasks (filter by status)",
+                  "request": {
+                    "method": "GET",
+                    "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                    "url": {
+                      "raw": "{{taskBaseUrl}}/api/v1/projects/{{projectId}}/tasks?status=TODO",
+                      "host": ["{{taskBaseUrl}}"],
+                      "path": ["api", "v1", "projects", "{{projectId}}", "tasks"],
+                      "query": [
+                        { "key": "status", "value": "TODO" }
+                      ]
+                    },
+                    "description": "Filter tasks by status. Valid values: TODO, IN_PROGRESS, DONE. Example uses `status=TODO`."
+                  }
+                },
+                {
                   "name": "Get Task By Id",
                   "request": {
                     "method": "GET",

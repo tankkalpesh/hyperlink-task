@@ -29,8 +29,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint((request, response, authException) -> writeJsonError(response, HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))
-                        .accessDeniedHandler((request, response, accessDeniedException) -> writeJsonError(response, HttpServletResponse.SC_FORBIDDEN, "Forbidden"))
+                    .authenticationEntryPoint((request, response, authException) -> writeJsonError(request, response, HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))
+                    .accessDeniedHandler((request, response, accessDeniedException) -> writeJsonError(request, response, HttpServletResponse.SC_FORBIDDEN, "Forbidden"))
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
@@ -41,9 +41,10 @@ public class SecurityConfig {
         return http.build();
     }
 
-    private void writeJsonError(HttpServletResponse response, int status, String message) throws IOException {
+    private void writeJsonError(jakarta.servlet.http.HttpServletRequest request, HttpServletResponse response, int status, String message) throws IOException {
         response.setStatus(status);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getWriter().write("{\"timestamp\":\"" + java.time.LocalDateTime.now() + "\",\"status\":" + status + ",\"message\":\"" + message + "\"}");
+        String path = request.getRequestURI();
+        response.getWriter().write("{\"timestamp\":\"" + java.time.LocalDateTime.now() + "\",\"status\":" + status + ",\"message\":\"" + message + "\",\"path\":\"" + path + "\"}");
     }
 }
