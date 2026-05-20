@@ -1,0 +1,274 @@
+{
+  "info": {
+    "name": "Hyperlink Task",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const token = pm.collectionVariables.get('token');",
+              "if (token) {",
+              "  pm.request.headers.upsert({ key: 'Authorization', value: `Bearer ${token}` });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "variable": [
+        { "key": "authBaseUrl", "value": "http://localhost:8081" },
+        { "key": "taskBaseUrl", "value": "http://localhost:8082" },
+        { "key": "token", "value": "" },
+        { "key": "userId", "value": "" },
+        { "key": "projectId", "value": "" },
+        { "key": "taskId", "value": "" }
+      ],
+      "item": [
+        {
+          "name": "Auth Service",
+          "item": [
+            {
+              "name": "User APIs",
+              "item": [
+                {
+                  "name": "Register",
+                  "request": {
+                    "method": "POST",
+                    "header": [{ "key": "Content-Type", "value": "application/json" }],
+                    "url": { "raw": "{{authBaseUrl}}/api/v1/auth/register", "host": ["{{authBaseUrl}}"], "path": ["api", "v1", "auth", "register"] },
+                    "body": { "mode": "raw", "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Pass123!\",\n  \"fullName\": \"User Example\"\n}" }
+                  }
+                },
+                {
+                  "name": "Login",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test('login response has token', function () {",
+                          "  const json = pm.response.json();",
+                          "  pm.expect(json).to.have.property('token');",
+                          "  pm.collectionVariables.set('token', json.token);",
+                          "});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [{ "key": "Content-Type", "value": "application/json" }],
+                    "url": { "raw": "{{authBaseUrl}}/api/v1/auth/login", "host": ["{{authBaseUrl}}"], "path": ["api", "v1", "auth", "login"] },
+                    "body": { "mode": "raw", "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Pass123!\"\n}" }
+                  }
+                },
+                {
+                  "name": "Get Me",
+                  "request": {
+                    "method": "GET",
+                    "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                    "url": { "raw": "{{authBaseUrl}}/api/v1/users/me", "host": ["{{authBaseUrl}}"], "path": ["api", "v1", "users", "me"] }
+                  }
+                },
+                {
+                  "name": "Get User By Id",
+                  "request": {
+                    "method": "GET",
+                    "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                    "url": { "raw": "{{authBaseUrl}}/api/v1/users/{{userId}}", "host": ["{{authBaseUrl}}"], "path": ["api", "v1", "users", "{{userId}}"] }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Admin APIs",
+              "item": [
+                {
+                  "name": "Login As Admin",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test('login response has token', function () {",
+                          "  const json = pm.response.json();",
+                          "  pm.expect(json).to.have.property('token');",
+                          "  pm.collectionVariables.set('token', json.token);",
+                          "});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [{ "key": "Content-Type", "value": "application/json" }],
+                    "url": { "raw": "{{authBaseUrl}}/api/v1/auth/login", "host": ["{{authBaseUrl}}"], "path": ["api", "v1", "auth", "login"] },
+                    "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"Admin123!\"\n}" }
+                  }
+                },
+                {
+                  "name": "List Users",
+                  "request": {
+                    "method": "GET",
+                    "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                    "url": { "raw": "{{authBaseUrl}}/api/v1/users", "host": ["{{authBaseUrl}}"], "path": ["api", "v1", "users"] }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Task Service",
+          "item": [
+            {
+              "name": "Project",
+              "item": [
+                {
+                  "name": "List Projects",
+                  "request": {
+                    "method": "GET",
+                    "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                    "url": { "raw": "{{taskBaseUrl}}/api/v1/projects", "host": ["{{taskBaseUrl}}"], "path": ["api", "v1", "projects"] }
+                  }
+                },
+                {
+                  "name": "Get Project By Id",
+                  "request": {
+                    "method": "GET",
+                    "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                    "url": { "raw": "{{taskBaseUrl}}/api/v1/projects/{{projectId}}", "host": ["{{taskBaseUrl}}"], "path": ["api", "v1", "projects", "{{projectId}}"] }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Task",
+              "item": [
+                {
+                  "name": "Create Task",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" },
+                      { "key": "Authorization", "value": "Bearer {{token}}" }
+                    ],
+                    "url": { "raw": "{{taskBaseUrl}}/api/v1/projects/{{projectId}}/tasks", "host": ["{{taskBaseUrl}}"], "path": ["api", "v1", "projects", "{{projectId}}", "tasks"] },
+                    "body": { "mode": "raw", "raw": "{\n  \"title\": \"Demo Task\",\n  \"description\": \"Sample task\",\n  \"priority\": \"MEDIUM\"\n}" }
+                  }
+                },
+                {
+                  "name": "List Tasks",
+                  "request": {
+                    "method": "GET",
+                    "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                    "url": { "raw": "{{taskBaseUrl}}/api/v1/projects/{{projectId}}/tasks", "host": ["{{taskBaseUrl}}"], "path": ["api", "v1", "projects", "{{projectId}}", "tasks"] }
+                  }
+                },
+                {
+                  "name": "Get Task By Id",
+                  "request": {
+                    "method": "GET",
+                    "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                    "url": { "raw": "{{taskBaseUrl}}/api/v1/projects/{{projectId}}/tasks/{{taskId}}", "host": ["{{taskBaseUrl}}"], "path": ["api", "v1", "projects", "{{projectId}}", "tasks", "{{taskId}}"] }
+                  }
+                },
+                {
+                  "name": "Update Task",
+                  "request": {
+                    "method": "PUT",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" },
+                      { "key": "Authorization", "value": "Bearer {{token}}" }
+                    ],
+                    "url": { "raw": "{{taskBaseUrl}}/api/v1/projects/{{projectId}}/tasks/{{taskId}}", "host": ["{{taskBaseUrl}}"], "path": ["api", "v1", "projects", "{{projectId}}", "tasks", "{{taskId}}"] },
+                    "body": { "mode": "raw", "raw": "{\n  \"title\": \"Updated Task\",\n  \"description\": \"Updated task description\",\n  \"priority\": \"HIGH\"\n}" }
+                  }
+                },
+                {
+                  "name": "My Tasks",
+                  "request": {
+                    "method": "GET",
+                    "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                    "url": { "raw": "{{taskBaseUrl}}/api/v1/tasks/my-tasks", "host": ["{{taskBaseUrl}}"], "path": ["api", "v1", "tasks", "my-tasks"] }
+                  }
+                },
+                {
+                  "name": "Update Task Status",
+                  "request": {
+                    "method": "PATCH",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" },
+                      { "key": "Authorization", "value": "Bearer {{token}}" }
+                    ],
+                    "url": { "raw": "{{taskBaseUrl}}/api/v1/projects/{{projectId}}/tasks/{{taskId}}/status", "host": ["{{taskBaseUrl}}"], "path": ["api", "v1", "projects", "{{projectId}}", "tasks", "{{taskId}}", "status"] },
+                    "body": { "mode": "raw", "raw": "{\n  \"status\": \"TODO\"\n}" }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Admin APIs",
+              "item": [
+                {
+                  "name": "Create Project",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" },
+                      { "key": "Authorization", "value": "Bearer {{token}}" }
+                    ],
+                    "url": { "raw": "{{taskBaseUrl}}/api/v1/projects", "host": ["{{taskBaseUrl}}"], "path": ["api", "v1", "projects"] },
+                    "body": { "mode": "raw", "raw": "{\n  \"name\": \"Demo Project\",\n  \"description\": \"Sample project\"\n}" }
+                  }
+                },
+                {
+                  "name": "Update Project",
+                  "request": {
+                    "method": "PUT",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" },
+                      { "key": "Authorization", "value": "Bearer {{token}}" }
+                    ],
+                    "url": { "raw": "{{taskBaseUrl}}/api/v1/projects/{{projectId}}", "host": ["{{taskBaseUrl}}"], "path": ["api", "v1", "projects", "{{projectId}}"] },
+                    "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Project\",\n  \"description\": \"Updated description\"\n}" }
+                  }
+                },
+                {
+                  "name": "Assign Task",
+                  "request": {
+                    "method": "PATCH",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" },
+                      { "key": "Authorization", "value": "Bearer {{token}}" }
+                    ],
+                    "url": { "raw": "{{taskBaseUrl}}/api/v1/projects/{{projectId}}/tasks/{{taskId}}/assign", "host": ["{{taskBaseUrl}}"], "path": ["api", "v1", "projects", "{{projectId}}", "tasks", "{{taskId}}", "assign"] },
+                    "body": { "mode": "raw", "raw": "{\n  \"assigneeUserId\": \"{{userId}}\"\n}" }
+                  }
+                },
+                {
+                  "name": "Delete Project",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                    "url": { "raw": "{{taskBaseUrl}}/api/v1/projects/{{projectId}}", "host": ["{{taskBaseUrl}}"], "path": ["api", "v1", "projects", "{{projectId}}"] }
+                  }
+                },
+                {
+                  "name": "Delete Task",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                    "url": { "raw": "{{taskBaseUrl}}/api/v1/projects/{{projectId}}/tasks/{{taskId}}", "host": ["{{taskBaseUrl}}"], "path": ["api", "v1", "projects", "{{projectId}}", "tasks", "{{taskId}}"] }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
